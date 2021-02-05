@@ -1,10 +1,6 @@
 # Access
 
 Function acCompactRepair(ByVal pthfn As String, Optional doEnable As Boolean = True) As Boolean
-'v2.02 2013-11-28 16:22
-'if doEnable = True will compact and repair pthfn
-'if doEnable = False will then disable auto compact on pthfn
-
 On Error GoTo CompactFailed
 
 Dim A As Object
