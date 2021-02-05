@@ -1,0 +1,19 @@
+Sub CompactAndRepairAccessDB()
+
+    Dim Acc As Object
+    Set Acc = CreateObject("access.application")
+
+    Dim dbPath As String, dbPathX As String
+    
+    'Application.ThisWorkbook.Path
+    'dbPath = Application.CurrentProject.Path & "\" & "ČP_DrillDown_20200930_PL2021F1_36hTest_20201130_v14 Test.accdb"
+    dbPath = "w:\ČP - Transfer Charging - Dokumenty\09_PHASE01_TC_Methodology\01_Model_výpočet\03_Plán F1 2021\05_DrillDown - PL21_F1\01_Access\Archiv\ČP_DrillDown_20200930_PL2021F1_36hTest_20201130_v14 Test.accdb"
+    dbPathX = Application.CurrentProject.Path & "\" & "tmp.accdb"
+
+    Acc.DBEngine.CompactDatabase dbPath, dbPathX
+    Acc.Quit
+    Set Acc = Nothing
+    Kill dbPath
+    Name dbPathX As dbPath
+
+End Sub
