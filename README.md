@@ -63,7 +63,7 @@ On Error GoTo 0
             strTemp = Dir
         Loop
 
-        'Call RecursiveDir for each subfolder in colFolders
+        'Call RecursiveDir for each subfolder in colFolders'
         For Each vFolderName In colFolders
             Call RecursiveDir(colFiles, strFolder & vFolderName, strFileSpec, True)
         Next vFolderName
@@ -80,3 +80,9 @@ Private Function TrailingSlash(strFolder As String) As String
         End If
     End If
 End Function
+
+Sub CompactRepair()
+  Dim control As Office.CommandBarControl
+  Set control = CommandBars.FindControl( Id:=2071 )
+  control.accDoDefaultAction
+End Sub
