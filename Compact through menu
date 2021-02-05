@@ -1,0 +1,5 @@
+Public Sub CompactDb2()
+  Dim control As Office.CommandBarControl
+  Set control = CommandBars.FindControl(Id:=2071)
+ control.accDoDefaultAction
+End Sub
