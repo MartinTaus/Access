@@ -1,0 +1,70 @@
+Function CompactDatabase(DatabaseName As String, DbPWD As String) As Boolean
+On Error GoTo SubError
+    Dim booStatus As Boolean
+    Dim backupCreated As Boolean
+    Dim strBackupFile As String
+    Dim dtmStart As Date
+    Dim strLDB As String
+    Dim strCurLinkDir As String
+    Dim compactSuccessfull As Boolean
+
+    booStatus = False
+    backupCreated = False
+    compactSuccessfull = False
+    
+    ' Make sure that DatabaseName exists
+    If Len(Dir$(DatabaseName)) > 0 Then
+    
+        ' Figure out what the backup file should be named
+        If StrComp(Right$(DatabaseName, 6), ".accdb", vbTextCompare) = 0 Then
+            strBackupFile = Left$(DatabaseName, Len(DatabaseName) - 6) & "-Old.accdb"
+            ' Determine whether the backup file already exists, and delete it if it does.
+            If Len(Dir$(strBackupFile)) > 0 Then
+                Kill strBackupFile
+            End If
+            
+            strLDB = Left$(DatabaseName, Len(DatabaseName) - 6) & ".laccdb"
+            If Len(Dir$(strLDB)) > 0 Then
+                MsgBox "Backend database is still opened.  Make sure everyone is logged off " _
+                       & "and try again.", vbCritical + vbOKOnly, "Database still open"
+                GoTo SubExit
+            End If
+
+            ' rename backend to backup name
+            Name DatabaseName As strBackupFile
+            backupCreated = True
+
+            'DBEngine.CompactDatabase strBackupFile, DatabaseName
+            DBEngine.CompactDatabase strBackupFile, DatabaseName, , , ";PWD=" & DbPWD
+                     
+            compactSuccessfull = True
+            
+            If backupCreated = True _
+            And compactSuccessfull = True Then
+                Kill strBackupFile
+            End If
+            booStatus = True
+        Else
+            booStatus = False
+        End If
+    
+    End If
+
+SubExit:
+    CompactDatabase = booStatus
+    Exit Function
+
+SubError:
+    booStatus = False
+    
+    'Undo our attempt at compacting
+    If backupCreated = True Then
+        If compactSuccessfull = False Then
+            Name strBackupFile As DatabaseName
+        End If
+    End If
+        
+    MsgBox Me.Name & " - CompactDatabase error: " & vbCrLf & Err.Number & ": " & Err.Description
+    Resume SubExit
+
+End Function
